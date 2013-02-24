@@ -1,15 +1,17 @@
-#include <SPI.h>
 #include <avr/pgmspace.h>
-#include <Adafruit_WS2801.h>
+#include "Adafruit_WS2801.h"
 #include <limits.h>
 
-#define CPIN ( (uint8_t)52 )
-#define DPIN ( (uint8_t)53 )
+#define CPIN ( (uint8_t)2 ) // ATTiny85 pin 7
+#define DPIN ( (uint8_t)1 ) // ATTiny85 pin 6
 
+#define MAX( a, b )( ((a) > (b)) ? (a) : (b) )
+#define MIN( a, b )( ((a) > (b)) ? (b) : (a) )
 #define IN
 #define OUT
 
 // table of 256 sine values / one sine period / stored in flash memory
+// table from http://interface.khm.de/index.php/lab/experiments/arduino-dds-sinewave-generator/
 PROGMEM  prog_uchar sine256[]  = {
 	127,130,133,136,139,143,146,149,152,155,158,161,164,167,170,173,176,178,181,184,187,190,192,195,198,200,203,205,208,210,212,215,217,219,221,223,225,227,229,231,233,234,236,238,239,240,
 	242,243,244,245,247,248,249,249,250,251,252,252,253,253,253,254,254,254,254,254,254,254,253,253,253,252,252,251,250,249,249,248,247,245,244,243,242,240,239,238,236,234,233,231,229,227,225,223,
@@ -63,12 +65,15 @@ void colorCycle
   IN OUT uint16_t   *delayTime
 )
 {
+  // algorithm from http://krazydad.com/tutorials/makecolors.php
   (void) trebAmpl;
 
-  uint32_t const FREQUENCY = 24;
+  uint32_t const FREQUENCY = 27;
   uint16_t const PHASE_R = 81;
   uint16_t const PHASE_G = 0;
   uint16_t const PHASE_B = 162;
+
+  uint32_t const MAX_COLOR = 10;
 
   uint8_t rSineIndex = ((FREQUENCY*bassAmpl/10) + PHASE_R) & 255;
   uint8_t gSineIndex = ((FREQUENCY*bassAmpl/10) + PHASE_G) & 255;
@@ -78,7 +83,11 @@ void colorCycle
   color->g = pgm_read_byte_near(sine256 + gSineIndex);
   color->b = pgm_read_byte_near(sine256 + bSineIndex);
 
-  *delayTime = 10;
+  color->r = color->r*MAX_COLOR / 255;
+  color->g = color->g*MAX_COLOR / 255;
+  color->b = color->b*MAX_COLOR / 255;
+
+  *delayTime = 20;
 }
 
 
