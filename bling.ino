@@ -117,31 +117,46 @@ void colorLevels
  IN OUT uint16_t   *delayTime
  )
 {
-    if ( trebAmpl > trebMax * 1 / 10 )
+//  Serial.print("trebAmpl: ");
+//  Serial.print(trebAmpl);
+  Serial.print("\tbassMax:");
+  Serial.println(bassMax);
+  
+  if ( bassAmpl > 950 ) {
+    color->r = 255;
+    color->g = 0;
+    color->b = 0;  
+  } else {
+    color->r = 0;
+    color->g = 0;
+    color->b = 0;
+  }
+    /*
+    if ( bassAmpl > bassMax * 1 / 10 )
     {
         // color->b = 0x10;
-        if ( trebAmpl > trebMax * 2 / 10 )
+        if ( bassAmpl > bassMax * 2 / 10 )
         {
             // color->b = 0x40;
-            if ( trebAmpl > trebMax * 3 / 10 )
+            if ( bassAmpl > bassMax * 3 / 10 )
             {
                 // color->b = 0xA0;
-                if ( trebAmpl > trebMax * 4 / 10 )
+                if ( bassAmpl > bassMax * 4 / 10 )
                 {
                     // color->b = 0xFF;
-                    if ( trebAmpl > trebMax * 5 / 10 )
+                    if ( bassAmpl > bassMax * 5 / 10 )
                     {
                         color->g = 0x40;
-                        if ( trebAmpl > trebMax * 6 / 10 )
+                        if ( bassAmpl > bassMax * 6 / 10 )
                         {
                             color->g = 0xA0;
-                            if ( trebAmpl > trebMax * 7 / 10 )
+                            if ( bassAmpl > bassMax * 7 / 10 )
                             {
                                 color->g = 0xFF;
-                                if ( trebAmpl > trebMax * 8 / 10 )
+                                if ( bassAmpl > bassMax * 8 / 10 )
                                 {
                                     color->r = 0x40;
-                                    if ( trebAmpl > trebMax * 9 / 10 )
+                                    if ( bassAmpl > bassMax * 9 / 10 )
                                     {
                                         color->r = 0xFF;
                                     }
@@ -153,8 +168,9 @@ void colorLevels
             }
         }
     }
+    */
 
-    *delayTime = 100;
+    *delayTime = 25;
 }
 
 
@@ -187,6 +203,7 @@ uint32_t Lmic;
 void setup() {
     // put your setup code here, to run once:
     LedDriver.begin();
+    Serial.begin(9600);
 }
 
 void loop() {
